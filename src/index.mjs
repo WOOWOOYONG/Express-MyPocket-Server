@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import session from 'express-session';
 import 'dotenv/config';
 import './strategies/google-strategy.mjs';
+import userRoutes from './routes/user.mjs';
 
 const app = express();
 
@@ -34,36 +35,7 @@ app.get('/', (request, response) => {
   response.status(200).send({ msg: 'Hello World' });
 });
 
-app.get(
-  '/auth/google',
-  passport.authenticate('google', { scope: ['email', 'profile'] })
-);
-
-app.get(
-  '/auth/google/callback',
-  passport.authenticate('google', {
-    failureRedirect: '/login',
-  }),
-  (req, res) => {
-    res.redirect('/');
-  }
-);
-
-app.get('/login', (request, response) => {
-  response.send({ msg: 'login Page' });
-});
-
-app.get('/api/users', (request, response) => {
-  response.send([{ id: 1, username: 'tony', displayName: 'Tony' }]);
-});
-
-app.get('/api/users/:id', (request, response) => {
-  console.log(request.params);
-  const parsedId = parseInt(request.params.id);
-  if (isNaN(parsedId)) {
-    return response.status(400).send({ msg: 'Bad Request. Invalid ID' });
-  }
-});
+app.use('/', userRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is Running on Port ${PORT}`);
