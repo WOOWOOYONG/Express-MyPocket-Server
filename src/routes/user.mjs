@@ -1,5 +1,7 @@
 import express from 'express';
 import passport from 'passport';
+import generateJWT from '../utils/generateJWT.mjs';
+import verifyToken from '../middlewares/auth.mjs';
 
 const router = express.Router();
 
@@ -17,28 +19,20 @@ router.get(
     failureRedirect: '/login',
   }),
   (req, res) => {
+    const token = generateJWT(req.user);
+
+    res.cookie('access-token', token, { httpOnly: true, secure: true });
     res.redirect('/');
   }
 );
 
-router.get('/login', (request, response) => {
-  response.send({ msg: 'login Page' });
+router.get('/api/login', verifyToken, (req, res) => {
+  const user = req.user;
+  res.status(200).send({ msg: `Hello ${user.userName}` });
 });
 
-router.get('/api/users', (request, response) => {
-  response.send([{ id: 1, username: 'tony', displayName: 'Tony' }]);
-});
-
-router.get('/api/users/:id', (request, response) => {
-  console.log(request.params);
-  const parsedId = parseInt(request.params.id);
-  if (isNaN(parsedId)) {
-    return response.status(400).send({ msg: 'Bad Request. Invalid ID' });
-  }
-});
-
-router.get('/api/auth/profile', (request, response) => {
-  return request.user ? response.send(request.user) : response.sendStatus(401);
+router.post('/api/register', (req, res) => {
+  console.log(req.body);
 });
 
 export default router;

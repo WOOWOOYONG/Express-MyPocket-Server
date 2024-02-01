@@ -2,6 +2,7 @@ import express from 'express';
 import passport from 'passport';
 import mongoose from 'mongoose';
 import session from 'express-session';
+import cookieParser from 'cookie-parser';
 import 'dotenv/config';
 import './strategies/google-strategy.mjs';
 import userRoutes from './routes/user.mjs';
@@ -17,6 +18,7 @@ mongoose
     console.log(`Error ${err}`);
   });
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(
   session({
@@ -31,8 +33,8 @@ app.use(passport.session());
 
 const PORT = process.env.PORT || 8080;
 
-app.get('/', (request, response) => {
-  response.status(200).send({ msg: 'Hello World' });
+app.get('/', (req, res) => {
+  res.status(200).send({ msg: 'Hello World' });
 });
 
 app.use('/', userRoutes);
