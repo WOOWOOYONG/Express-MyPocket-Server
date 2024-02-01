@@ -1,6 +1,7 @@
 import express from 'express';
 import passport from 'passport';
 import mongoose from 'mongoose';
+import cors from 'cors';
 // import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import 'dotenv/config';
@@ -18,6 +19,13 @@ mongoose
     console.log(`Error ${err}`);
   });
 
+const corsOptions = {
+  origin: 'http://localhost:3000', // 您的前端應用的地址
+  credentials: true, // 允許發送 cookie
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+};
+
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 // app.use(
