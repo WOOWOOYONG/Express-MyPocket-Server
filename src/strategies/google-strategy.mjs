@@ -2,16 +2,16 @@ import passport from 'passport';
 import { Strategy } from 'passport-google-oauth20';
 import User from '../models/userModel.mjs';
 
-passport.serializeUser((user, done) => {
-  console.log('Serialize 使用者');
-  done(null, user._id);
-});
+// passport.serializeUser((user, done) => {
+//   console.log('Serialize 使用者');
+//   done(null, user._id);
+// });
 
-passport.deserializeUser(async (_id, done) => {
-  console.log('Deserialize 使用者');
-  const foundUser = await User.findOne({ _id });
-  done(null, foundUser);
-});
+// passport.deserializeUser(async (_id, done) => {
+//   console.log('Deserialize 使用者');
+//   const foundUser = await User.findOne({ _id });
+//   done(null, foundUser);
+// });
 
 export default passport.use(
   new Strategy(

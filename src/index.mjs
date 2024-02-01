@@ -1,7 +1,7 @@
 import express from 'express';
 import passport from 'passport';
 import mongoose from 'mongoose';
-import session from 'express-session';
+// import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import 'dotenv/config';
 import './strategies/google-strategy.mjs';
@@ -20,16 +20,16 @@ mongoose
 
 app.use(cookieParser());
 app.use(express.json());
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false },
-  })
-);
+// app.use(
+//   session({
+//     secret: process.env.SESSION_SECRET,
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: { secure: false },
+//   })
+// );
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 const PORT = process.env.PORT || 8080;
 
