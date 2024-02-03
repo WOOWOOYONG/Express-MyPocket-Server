@@ -52,4 +52,10 @@ router.post('/api/userInfo', verifyToken, (req, res) => {
   res.status(200).send(userInfo);
 });
 
+router.post('/api/logout', (req, res) => {
+  console.log('user logout');
+  res.cookie('access-token', '', { httpOnly: true, expires: new Date(0) });
+  res.status(200).send({ message: 'Logged out successfully' });
+});
+
 export default router;
