@@ -97,26 +97,23 @@ router.post('/api/userInfo', verifyToken, (req, res) => {
   const user = req.user;
   console.log('取得使用者資料');
   if (!user) {
-    return res.status(401).send({ error: '沒有操作權限' });
+    return res.status(401).send({ error: '沒有操作權限', ok: false });
   }
   const userInfo = {
     userName: user.userName,
     userId: user._id,
     email: user.email,
+    thumbnail: user.thumbnail,
   };
 
-  if (user.thumbnail) {
-    userInfo.thumbnail = user.thumbnail;
-  }
-
-  res.status(200).send(userInfo);
+  res.status(200).send({ data: userInfo, ok: true });
 });
 
 // 使用者登出
-router.post('/api/logout', (req, res) => {
-  console.log('使用者登出');
-  res.cookie('token', '', { httpOnly: true, expires: new Date(0) });
-  res.status(200).send({ message: '成功登出' });
-});
+// router.post('/api/logout', (req, res) => {
+//   console.log('使用者登出');
+//   // res.cookie('token', '', { httpOnly: true, expires: new Date(0) });
+//   res.status(200).send({ message: '成功登出' });
+// });
 
 export default router;
