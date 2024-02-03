@@ -21,7 +21,9 @@ export default passport.use(
       callbackURL: '/auth/google/callback',
     },
     async (accessToken, refreshToken, profile, done) => {
-      const foundUser = await User.findOne({ googleID: profile.id }).exec();
+      const foundUser = await User.findOne({
+        googleID: profile.id,
+      }).exec();
       if (foundUser) {
         console.log('使用者已註冊');
         done(null, foundUser);

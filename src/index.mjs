@@ -20,8 +20,8 @@ mongoose
   });
 
 const corsOptions = {
-  origin: 'http://localhost:3000', // 您的前端應用的地址
-  credentials: true, // 允許發送 cookie
+  origin: 'http://localhost:3000',
+  credentials: true,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
 };
 
