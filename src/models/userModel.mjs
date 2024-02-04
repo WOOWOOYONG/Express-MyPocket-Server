@@ -22,41 +22,17 @@ const UserSchema = new Schema({
   },
   googleID: {
     type: String,
-    unique: true,
   },
   thumbnail: {
     type: String,
+    default:
+      'https://i.pinimg.com/564x/a3/2a/fc/a32afc3ac036e90b6cf06e59ad04ed22.jpg',
   },
   date: {
     type: Date,
     default: Date.now,
   },
 });
-
-// const GoogleUserSchema = new Schema({
-//   userName: {
-//     type: String,
-//     required: true,
-//   },
-//   googleID: {
-//     type: String,
-//     unique: true,
-//   },
-//   thumbnail: {
-//     type: String,
-//   },
-//   password: {
-//     type: String,
-//   },
-//   email: {
-//     type: String,
-//     required: true,
-//   },
-//   date: {
-//     type: Date,
-//     default: Date.now,
-//   },
-// });
 
 UserSchema.methods.comparePassword = async function (password, cb) {
   let result;
@@ -82,6 +58,5 @@ UserSchema.pre('save', async function (next) {
 });
 
 const User = mongoose.model('User', UserSchema);
-// const GoogleUser = mongoose.model('GoogleUser', GoogleUserSchema);
 
 export default User;

@@ -39,25 +39,26 @@ router.post('/api/register', async (req, res) => {
   const emailExist = await User.findOne({
     email: req.body.email,
   });
-  if (emailExist) return res.status(400).send('此信箱已被註冊');
+  if (emailExist)
+    return res.status(400).send({ msg: '此信箱已被註冊', ok: false });
 
-  const { email, userName, password } = req.body;
-  const defaultThumbnail =
-    'https://i.pinimg.com/564x/a3/2a/fc/a32afc3ac036e90b6cf06e59ad04ed22.jpg';
+  const { email, password, userName } = req.body;
   const newUser = new User({
     email,
-    userName,
     password,
-    thumbnail: defaultThumbnail,
+    userName,
   });
+
   try {
     const savedUser = await newUser.save();
-    return res.send({
-      msg: '使用者成功註冊',
+    return res.status(200).send({
+      msg: '成功註冊',
+      ok: true,
       savedUser,
     });
   } catch (error) {
-    return res.status(500).send('無法註冊');
+    console.log(error);
+    return res.status(500).send({ msg: '無法註冊', ok: false });
   }
 });
 
@@ -69,7 +70,9 @@ router.post('/api/login', async (req, res) => {
 
   const foundUser = await User.findOne({ email: req.body.email });
   if (!foundUser) {
-    return res.status(401).send('無法找到使用者，請確認電子信箱是否正確');
+    return res
+      .status(401)
+      .send({ msg: '無法找到使用者，請確認電子信箱是否正確', ok: false });
   }
   foundUser.comparePassword(req.body.password, (error, isMatch) => {
     if (error) {
@@ -85,7 +88,9 @@ router.post('/api/login', async (req, res) => {
         id: _id,
       };
 
-      res.status(200).send({ token, data: userData, ok: true });
+      res
+        .status(200)
+        .send({ msg: '成功登入', token, data: userData, ok: true });
     } else {
       return res.status(401).send({ msg: '密碼錯誤', ok: false });
     }
@@ -101,12 +106,12 @@ router.post('/api/userInfo', verifyToken, (req, res) => {
   }
   const userInfo = {
     userName: user.userName,
-    userId: user._id,
+    id: user._id,
     email: user.email,
     thumbnail: user.thumbnail,
   };
 
-  res.status(200).send({ data: userInfo, ok: true });
+  res.status(200).send({ msg: '成功取得使用者資料', data: userInfo, ok: true });
 });
 
 // 使用者登出
