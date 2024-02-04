@@ -3,9 +3,8 @@ import jwt from 'jsonwebtoken';
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-
   if (!token) {
-    return res.status(401).send({ msg: '沒有操作權限', ok: false });
+    return res.status(401).json({ msg: '沒有操作權限', ok: false });
   }
 
   try {
@@ -13,7 +12,8 @@ const verifyToken = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(400).send({ msg: '無效的 token', ok: false });
+    console.log(error);
+    return res.status(400).json({ msg: '無效的 token', ok: false });
   }
 };
 

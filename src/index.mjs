@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import 'dotenv/config';
 import './strategies/google-strategy.mjs';
 import userRoutes from './routes/user.mjs';
+import pocketRoutes from './routes/pocket.mjs';
 
 const app = express();
 
@@ -41,11 +42,8 @@ app.use(passport.initialize());
 
 const PORT = process.env.PORT || 8080;
 
-app.get('/', (req, res) => {
-  res.status(200).send({ msg: 'Hello World' });
-});
-
 app.use('/', userRoutes);
+app.use('/', pocketRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is Running on Port ${PORT}`);

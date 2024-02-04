@@ -31,16 +31,16 @@ router.get(
 );
 
 // 使用者註冊
-router.post('/api/register', async (req, res) => {
+router.post('/api/signup', async (req, res) => {
   const { error } = registerValidation(req.body);
   console.log(error);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).json(error.details[0].message);
 
   const emailExist = await User.findOne({
     email: req.body.email,
   });
   if (emailExist)
-    return res.status(400).send({ msg: '此信箱已被註冊', ok: false });
+    return res.status(400).json({ msg: '此信箱已被註冊', ok: false });
 
   const { email, password, userName } = req.body;
   const newUser = new User({
@@ -51,14 +51,14 @@ router.post('/api/register', async (req, res) => {
 
   try {
     const savedUser = await newUser.save();
-    return res.status(200).send({
+    return res.status(201).json({
       msg: '成功註冊',
       ok: true,
       savedUser,
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).send({ msg: '無法註冊', ok: false });
+    return res.status(500).json({ msg: '無法註冊', ok: false });
   }
 });
 
@@ -66,17 +66,17 @@ router.post('/api/register', async (req, res) => {
 router.post('/api/login', async (req, res) => {
   console.log('使用者登入');
   const { error } = loginValidation(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).json(error.details[0].message);
 
   const foundUser = await User.findOne({ email: req.body.email });
   if (!foundUser) {
     return res
       .status(401)
-      .send({ msg: '無法找到使用者，請確認電子信箱是否正確', ok: false });
+      .json({ msg: '無法找到使用者，請確認電子信箱是否正確', ok: false });
   }
   foundUser.comparePassword(req.body.password, (error, isMatch) => {
     if (error) {
-      return res.status(500).send(error);
+      return res.status(500).json(error);
     }
     if (isMatch) {
       const token = generateJWT(foundUser);
@@ -90,9 +90,9 @@ router.post('/api/login', async (req, res) => {
 
       res
         .status(200)
-        .send({ msg: '成功登入', token, data: userData, ok: true });
+        .json({ msg: '成功登入', token, data: userData, ok: true });
     } else {
-      return res.status(401).send({ msg: '密碼錯誤', ok: false });
+      return res.status(401).json({ msg: '密碼錯誤', ok: false });
     }
   });
 });
@@ -102,7 +102,7 @@ router.post('/api/userInfo', verifyToken, (req, res) => {
   const user = req.user;
   console.log('取得使用者資料');
   if (!user) {
-    return res.status(401).send({ error: '沒有操作權限', ok: false });
+    return res.status(401).json({ error: '沒有操作權限', ok: false });
   }
   const userInfo = {
     userName: user.userName,
@@ -111,14 +111,14 @@ router.post('/api/userInfo', verifyToken, (req, res) => {
     thumbnail: user.thumbnail,
   };
 
-  res.status(200).send({ msg: '成功取得使用者資料', data: userInfo, ok: true });
+  res.status(200).json({ msg: '成功取得使用者資料', data: userInfo, ok: true });
 });
 
 // 使用者登出
 // router.post('/api/logout', (req, res) => {
 //   console.log('使用者登出');
 //   // res.cookie('token', '', { httpOnly: true, expires: new Date(0) });
-//   res.status(200).send({ message: '成功登出' });
+//   res.status(200).json({ message: '成功登出' });
 // });
 
 export default router;
