@@ -40,8 +40,8 @@ userSchema.methods.comparePassword = async function (password, cb) {
   try {
     result = await bcrypt.compare(password, this.password);
     return cb(null, result);
-  } catch (error) {
-    return cb(error, result);
+  } catch (err) {
+    return cb(err, result);
   }
 };
 

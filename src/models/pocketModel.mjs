@@ -45,6 +45,10 @@ const pocketSchema = new Schema(
       maxlength: 50,
     },
     targets: [targetSchema],
+    totalPrice: {
+      type: Number,
+      default: 0,
+    },
     memo: {
       type: String,
       minlength: 1,
@@ -55,11 +59,27 @@ const pocketSchema = new Schema(
       ref: 'User',
       required: true,
     },
+    level: {
+      type: String,
+      enum: ['S', 'A', 'B', 'C'],
+    },
   },
   {
     timestamps: true,
   }
 );
+
+pocketSchema.pre('save', function (next) {
+  if (this.targets && this.targets.length > 0) {
+    this.totalPrice = this.targets.reduce(
+      (sum, target) => sum + (target.price || 0),
+      0
+    );
+  } else {
+    this.totalPrice = 0;
+  }
+  next();
+});
 
 const Pocket = mongoose.model('Pocket', pocketSchema);
 

@@ -32,9 +32,9 @@ router.get(
 
 // 使用者註冊
 router.post('/api/signup', async (req, res) => {
-  const { error } = registerValidation(req.body);
-  console.log(error);
-  if (error) return res.status(400).json(error.details[0].message);
+  const { err } = registerValidation(req.body);
+  console.log(err);
+  if (err) return res.status(400).json(err.details[0].message);
 
   const emailExist = await User.findOne({
     email: req.body.email,
@@ -56,8 +56,8 @@ router.post('/api/signup', async (req, res) => {
       ok: true,
       savedUser,
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(500).json({ msg: '無法註冊', ok: false });
   }
 });
@@ -65,8 +65,8 @@ router.post('/api/signup', async (req, res) => {
 // 使用者登入
 router.post('/api/login', async (req, res) => {
   console.log('使用者登入');
-  const { error } = loginValidation(req.body);
-  if (error) return res.status(400).json(error.details[0].message);
+  const { err } = loginValidation(req.body);
+  if (err) return res.status(400).json(err.details[0].message);
 
   const foundUser = await User.findOne({ email: req.body.email });
   if (!foundUser) {
@@ -74,9 +74,9 @@ router.post('/api/login', async (req, res) => {
       .status(401)
       .json({ msg: '無法找到使用者，請確認電子信箱是否正確', ok: false });
   }
-  foundUser.comparePassword(req.body.password, (error, isMatch) => {
-    if (error) {
-      return res.status(500).json(error);
+  foundUser.comparePassword(req.body.password, (err, isMatch) => {
+    if (err) {
+      return res.status(500).json(err);
     }
     if (isMatch) {
       const token = generateJWT(foundUser);
@@ -102,7 +102,7 @@ router.post('/api/userInfo', verifyToken, (req, res) => {
   const user = req.user;
   console.log('取得使用者資料');
   if (!user) {
-    return res.status(401).json({ error: '沒有操作權限', ok: false });
+    return res.status(401).json({ err: '沒有操作權限', ok: false });
   }
   const userInfo = {
     userName: user.userName,

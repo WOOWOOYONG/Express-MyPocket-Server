@@ -41,13 +41,13 @@ router.post('/api/pocket', verifyToken, async (req, res) => {
 router.delete('/api/pocket/:id', verifyToken, async (req, res) => {
   console.log('刪除Pocket');
   try {
-    const foundPocket = await Pocket.findById(req.params.id);
-    if (!foundPocket) {
+    const result = await Pocket.findByIdAndDelete(req.params.id);
+    if (!result) {
       return res.status(404).json({ msg: '找不到資料', ok: false });
     }
-    await foundPocket.remove();
     return res.status(200).json({ msg: '刪除pocket成功', ok: true });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ msg: err.message, ok: false });
   }
 });
@@ -73,7 +73,7 @@ router.patch('/api/pocket/:id', verifyToken, async (req, res) => {
   }
 });
 
-// 更新特定Pocket的status
+// 更新指定Pocket的status
 router.patch('/api/pocket/status/:id', verifyToken, async (req, res) => {
   console.log('更新Pocket狀態');
   const pocketId = req.params.id;
@@ -93,7 +93,7 @@ router.patch('/api/pocket/status/:id', verifyToken, async (req, res) => {
   }
 });
 
-// 更新特定Pocket的collect狀態
+// 更新指定Pocket的collect
 router.patch('/api/pocket/collect/:id', verifyToken, async (req, res) => {
   console.log('更新Pocket收藏');
   const pocketId = req.params.id;
@@ -113,7 +113,7 @@ router.patch('/api/pocket/collect/:id', verifyToken, async (req, res) => {
   }
 });
 
-// 取得使用者收藏的所有pocket item
+// 取得使用者收藏的所有pocket
 router.get('/api/pockets/collected', verifyToken, async (req, res) => {
   console.log('取得收藏的Pocket');
   try {

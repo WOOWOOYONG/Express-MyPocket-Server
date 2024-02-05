@@ -11,8 +11,8 @@ const verifyToken = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
     next();
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(400).json({ msg: '無效的 token', ok: false });
   }
 };
