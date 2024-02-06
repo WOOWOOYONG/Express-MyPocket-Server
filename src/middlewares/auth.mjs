@@ -13,7 +13,7 @@ const verifyToken = (req, res, next) => {
     next();
   } catch (err) {
     console.log(err);
-    return res.status(400).json({ msg: '無效的 token', ok: false });
+    return res.status(401).json({ msg: '無效的 token', ok: false });
   }
 };
 

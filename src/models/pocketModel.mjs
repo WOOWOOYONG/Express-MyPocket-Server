@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const targetSchema = new Schema({
-  target: {
+  name: {
     type: String,
     required: true,
     minlength: 1,
@@ -59,7 +59,7 @@ const pocketSchema = new Schema(
       ref: 'User',
       required: true,
     },
-    level: {
+    rank: {
       type: String,
       enum: ['S', 'A', 'B', 'C'],
     },

@@ -117,11 +117,16 @@ router.patch('/api/pocket/collect/:id', verifyToken, async (req, res) => {
 router.get('/api/pockets/collected', verifyToken, async (req, res) => {
   console.log('取得收藏的Pocket');
   try {
-    const collectedPockets = await Pocket.find({ collect: true });
+    const collectedPockets = await Pocket.find({
+      userId: req.id,
+      collect: true,
+    });
     if (collectedPockets.length === 0) {
-      return res.status(404).json({ msg: '沒有找到收藏的pocket', ok: false });
+      return res.status(200).json({ msg: '沒有找到任何收藏', ok: true });
     }
-    res.json({ msg: '取得收藏成功', data: collectedPockets, ok: true });
+    res
+      .status(200)
+      .json({ msg: '取得收藏成功', data: collectedPockets, ok: true });
   } catch (err) {
     res.status(500).json({ msg: err.message, ok: false });
   }
